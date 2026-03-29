@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POZ Kompendium — NFZ</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg: #f5f3ef;
+  --sidebar-bg: #1a2e1f;
+  --surface: #ffffff;
+  --border: #e5e1d8;
+  --text: #1c1a17;
+  --text-muted: #7a7570;
+  --accent: #1e5c3a;
+  --accent-light: #e8f2ec;
+  --accent2: #b84c1c;
+  --accent2-light: #fdf0eb;
+  --warn: #a07010;
+  --warn-light: #fdf6e3;
+  --info: #1a4a7a;
+  --info-light: #e8f0f8;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05);
+}
+
+* { box-sizing: border-box; margin:0; padding:0; }
+html { scroll-behavior: smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); font-size:15px; line-height:1.65; display:flex; flex-direction:column; min-height:100vh; }
+
+/* TOPBAR */
+.topbar { background:var(--sidebar-bg); color:white; padding:14px 24px; display:flex; align-items:center; gap:14px; position:sticky; top:0; z-index:100; border-bottom:1px solid rgba(255,255,255,0.08); }
+.topbar-logo { font-family:'Lora',serif; font-size:18px; font-weight:600; letter-spacing:-0.3px; white-space:nowrap; }
+.topbar-logo span { color:#7ecf9e; }
+.topbar-sub { font-size:12px; color:rgba(255,255,255,0.45); border-left:1px solid rgba(255,255,255,0.15); padding-left:14px; margin-left:4px; }
+.topbar-legal { margin-left:auto; font-size:11px; color:rgba(255,255,255,0.35); text-align:right; line-height:1.4; }
+
+/* LAYOUT */
+.app-body { display:flex; flex:1; }
+
+/* SIDEBAR */
+.sidebar { width:260px; background:var(--sidebar-bg); flex-shrink:0; padding:20px 0 40px; position:sticky; top:49px; height:calc(100vh - 49px); overflow-y:auto; }
+.sidebar::-webkit-scrollbar { width:4px; }
+.sidebar::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px; }
+.sidebar-section-label { padding:16px 20px 6px; font-size:10px; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.25); font-weight:600; }
+.sidebar-program { margin-bottom:4px; }
+.sidebar-program-btn { width:100%; padding:10px 20px; display:flex; align-items:center; gap:10px; background:none; border:none; color:rgba(255,255,255,0.75); cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:500; text-align:left; transition:all 0.15s; border-left:3px solid transparent; }
+.sidebar-program-btn:hover { background:rgba(255,255,255,0.08); color:white; }
+.sidebar-program-btn.active { color:white; border-left-color:#7ecf9e; background:rgba(255,255,255,0.06); }
+.sidebar-program-icon { font-size:16px; flex-shrink:0; }
+.sidebar-arrow { margin-left:auto; font-size:11px; transition:transform 0.2s; opacity:0.5; }
+.sidebar-program-btn.active .sidebar-arrow { transform:rotate(90deg); }
+.sidebar-subnav { display:none; padding:0 0 6px; }
+.sidebar-program.open .sidebar-subnav { display:block; }
+.sidebar-subnav-item { display:block; width:100%; padding:7px 20px 7px 50px; background:none; border:none; color:rgba(255,255,255,0.5); cursor:pointer; font-family:'DM Sans',sans-serif; font-size:12.5px; text-align:left; transition:color 0.15s; }
+.sidebar-subnav-item:hover { color:rgba(255,255,255,0.85); }
+.sidebar-subnav-item.active { color:#7ecf9e; font-weight:500; }
+
+/* CONTENT */
+.content { flex:1; min-width:0; padding:32px 40px 60px; max-width:900px; }
+.page { display:none; }
+.page.active { display:block; }
+
+/* PAGE HEADER */
+.page-header { margin-bottom:28px; padding-bottom:20px; border-bottom:1px solid var(--border); }
+.page-eyebrow { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--accent); font-weight:600; margin-bottom:6px; }
+.page-title { font-family:'Lora',serif; font-size:28px; font-weight:600; line-height:1.25; margin-bottom:8px; }
+.page-desc { font-size:15px; color:var(--text-muted); max-width:640px; }
+.legal-refs { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.legal-ref { display:inline-flex; align-items:center; gap:5px; font-size:11px; background:var(--border); padding:3px 10px; border-radius:20px; color:var(--text-muted); text-decoration:none; transition:background 0.15s; }
+.legal-ref:hover { background:#d8d4cc; color:var(--text); }
+.legal-ref-ext { background:var(--accent-light); color:var(--accent); }
+.legal-ref-ext:hover { background:#d0e8d8; }
+
+/* SOURCE FOOTER */
+.source-docs { margin-top:40px; padding:16px 20px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); }
+.source-docs-title { font-size:12px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px; }
+.source-doc-link { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; text-decoration:none; color:var(--text); }
+.source-doc-link:last-child { border-bottom:none; }
+.source-doc-link:hover { color:var(--accent); }
+.source-doc-icon { font-size:16px; flex-shrink:0; }
+.source-doc-meta { font-size:11px; color:var(--text-muted); }
+
+/* SECTION */
+.section { margin-bottom:32px; }
+.section-title { font-family:'Lora',serif; font-size:19px; font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+
+/* CARDS */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 24px; margin-bottom:14px; box-shadow:var(--shadow); }
+.card-sm { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:10px; }
+
+/* ALERTS */
+.alert { display:flex; gap:12px; padding:14px 18px; border-radius:8px; margin-bottom:14px; font-size:14px; line-height:1.5; }
+.alert-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+.alert-green  { background:var(--accent-light);  border:1px solid #b8ddc8; }
+.alert-red    { background:var(--accent2-light); border:1px solid #e8b89a; }
+.alert-yellow { background:var(--warn-light);    border:1px solid #e6c97a; }
+.alert-blue   { background:var(--info-light);    border:1px solid #b0c8e8; }
+.alert strong { font-weight:600; }
+
+/* STEPS */
+.steps { display:flex; flex-direction:column; gap:0; margin:16px 0; }
+.step { display:flex; gap:16px; padding-bottom:24px; }
+.step:last-child { padding-bottom:0; }
+.step-left { display:flex; flex-direction:column; align-items:center; }
+.step-num { width:34px; height:34px; border-radius:50%; background:var(--accent); color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0; z-index:1; }
+.step-num.muted { background:var(--border); color:var(--text-muted); }
+.step-line { width:2px; background:var(--border); flex:1; margin-top:4px; }
+.step:last-child .step-line { display:none; }
+.step-content { padding-top:5px; }
+.step-label { font-weight:600; font-size:15px; margin-bottom:4px; }
+.step-detail { font-size:13.5px; color:var(--text-muted); }
+.step-badge { display:inline-block; font-size:11px; padding:2px 8px; border-radius:10px; font-weight:600; margin-left:6px; vertical-align:middle; }
+.badge-cap  { background:#e8f0f8; color:var(--info); }
+.badge-ok   { background:var(--accent-light); color:var(--accent); }
+.badge-warn { background:var(--warn-light); color:var(--warn); }
+
+/* TABLES */
+.data-table { width:100%; border-collapse:collapse; font-size:13.5px; margin-bottom:14px; }
+.data-table th { text-align:left; padding:8px 12px; background:#f5f3ef; border-bottom:2px solid var(--border); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted); }
+.data-table td { padding:9px 12px; border-bottom:1px solid var(--border); vertical-align:top; }
+.data-table tr:last-child td { border-bottom:none; }
+.data-table tr:hover td { background:#faf9f7; }
+.price { font-weight:700; color:var(--accent); }
+.code-mono { font-family:monospace; font-size:11.5px; background:var(--border); padding:2px 6px; border-radius:4px; color:var(--accent); font-weight:600; }
+.new-badge { font-size:10px; background:var(--accent2-light); color:var(--accent2); padding:1px 6px; border-radius:8px; font-weight:600; margin-left:4px; vertical-align:middle; }
+
+/* GROUP BADGES */
+.gb { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:12px; font-size:12px; font-weight:600; }
+.gb-d { background:#fde8cc; color:#7a3a10; }
+.gb-k { background:#fce4e4; color:#7a1a1a; }
+.gb-e { background:#e4eafc; color:#1a2e8b; }
+.gb-p { background:#e4f5fc; color:#1a638b; }
+.gb-n { background:#f0e4fc; color:#5a1a8b; }
+
+/* GRID */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+@media (max-width:700px) { .grid-2,.grid-3 { grid-template-columns:1fr; } }
+
+/* STAT CARDS */
+.stat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 20px; text-align:center; }
+.stat-value { font-family:'Lora',serif; font-size:28px; font-weight:600; color:var(--accent); line-height:1.1; }
+.stat-label { font-size:12px; color:var(--text-muted); margin-top:4px; }
+.stat-sub { font-size:11px; color:var(--text-muted); margin-top:2px; font-style:italic; }
+
+/* FAQ */
+.faq-item { border:1px solid var(--border); border-radius:8px; margin-bottom:8px; overflow:hidden; }
+.faq-q { padding:13px 16px; cursor:pointer; font-weight:500; font-size:14px; display:flex; justify-content:space-between; align-items:center; background:var(--surface); user-select:none; }
+.faq-q:hover { background:#faf9f7; }
+.faq-arrow { transition:transform 0.2s; color:var(--text-muted); font-size:12px; }
+.faq-item.open .faq-arrow { transform:rotate(180deg); }
+.faq-a { display:none; padding:12px 16px 14px; font-size:13.5px; color:var(--text-muted); line-height:1.6; background:var(--surface); border-top:1px solid var(--border); }
+.faq-item.open .faq-a { display:block; }
+.faq-a ul { padding-left:16px; margin-top:6px; }
+.faq-a li { margin-bottom:4px; }
+
+/* LIMIT PILLS */
+.limit-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:10px; font-size:12px; font-weight:600; }
+.limit-hard { background:var(--accent2-light); color:var(--accent2); }
+.limit-soft { background:var(--warn-light); color:var(--warn); }
+.limit-ok   { background:var(--accent-light); color:var(--accent); }
+
+/* WERYFIKATOR */
+.check-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+.check-item { display:flex; align-items:center; gap:9px; padding:9px 12px; border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:13px; background:var(--surface); transition:all 0.12s; user-select:none; }
+.check-item:hover { border-color:var(--accent); background:var(--accent-light); }
+.check-item.checked { border-color:var(--accent); background:var(--accent-light); }
+.check-item input { accent-color:var(--accent); width:15px; height:15px; flex-shrink:0; cursor:pointer; }
+
+/* VERDICT */
+.verdict { padding:15px 18px; border-radius:8px; display:flex; gap:12px; font-size:14px; margin-top:12px; }
+.verdict-icon { font-size:20px; flex-shrink:0; }
+.verdict-title { font-weight:600; margin-bottom:4px; }
+.verdict-body { font-size:13px; color:var(--text-muted); line-height:1.5; }
+.verdict-body ul { padding-left:16px; margin-top:6px; }
+.verdict-body li { margin-bottom:4px; }
+.verdict-green  { background:var(--accent-light);  border:1px solid #b8ddc8; }
+.verdict-red    { background:var(--accent2-light); border:1px solid #e8b89a; }
+.verdict-yellow { background:var(--warn-light);    border:1px solid #e6c97a; }
+
+/* ICD KALKULATOR */
+.icd-search-wrap { position:relative; margin-bottom:10px; }
+.icd-search-wrap input { width:100%; padding:9px 12px 9px 36px; border:1px solid var(--border); border-radius:8px; font-size:14px; font-family:'DM Sans',sans-serif; background:var(--surface); outline:none; transition:border-color 0.15s; }
+.icd-search-wrap input:focus { border-color:var(--accent); }
+.icd-search-icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--text-muted); }
+.icd-list-box { max-height:260px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; background:var(--surface); }
+.icd-list-box::-webkit-scrollbar { width:4px; }
+.icd-list-box::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+.icd-row { padding:8px 12px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border); cursor:pointer; font-size:13px; transition:background 0.1s; }
+.icd-row:last-child { border-bottom:none; }
+.icd-row:hover { background:var(--accent-light); }
+.icd-row.sel { background:var(--accent-light); }
+.icd-row-code { font-family:monospace; font-size:11.5px; background:var(--border); padding:2px 6px; border-radius:4px; color:var(--accent); font-weight:600; flex-shrink:0; }
+.icd-row-badge { margin-left:auto; flex-shrink:0; }
+
+/* TAGI WYBRANYCH */
+.selected-tags { display:flex; flex-wrap:wrap; gap:6px; min-height:32px; margin:10px 0; }
+.sel-tag { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:12.5px; font-weight:500; }
+.sel-tag-x { cursor:pointer; opacity:.6; font-size:14px; line-height:1; }
+.sel-tag-x:hover { opacity:1; }
+
+/* CALLOUT */
+.callout { border-left:4px solid var(--accent); background:var(--accent-light); padding:12px 16px; border-radius:0 8px 8px 0; font-size:13.5px; margin:14px 0; }
+.callout.red { border-color:var(--accent2); background:var(--accent2-light); }
+.callout.yellow { border-color:var(--warn); background:var(--warn-light); }
+
+/* SRC */
+.src { font-size:11px; color:var(--text-muted); font-style:italic; margin-top:6px; }
+
+hr { border:none; border-top:1px solid var(--border); margin:20px 0; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">POZ <span>Kompendium</span></div>
+  <div class="topbar-sub">Baza wiedzy o programach NFZ w podstawowej opiece zdrowotnej</div>
+  <div class="topbar-legal">Zarządzenia NFZ 2025/2026</div>
+</div>
+
+<div class="app-body">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-section-label">Programy NFZ</div>
+
+  <div class="sidebar-program open" id="prog-ok">
+    <button class="sidebar-program-btn active" onclick="toggleProgram('ok')">
+      <span class="sidebar-program-icon">🏥</span> Opieka Koordynowana
+      <span class="sidebar-arrow">▶</span>
+    </button>
+    <div class="sidebar-subnav">
+      <button class="sidebar-subnav-item active" onclick="showPage('ok-czym')">Czym jest OK?</button>
+      <button class="sidebar-subnav-item" onclick="showPage('ok-wymagania')">Wymagania formalne</button>
+      <button class="sidebar-subnav-item" onclick="showPage('ok-finansowanie')">Finansowanie i stawki</button>
+      <button class="sidebar-subnav-item" onclick="showPage('ok-sciezka')">Ścieżka pacjenta</button>
+      <button class="sidebar-subnav-item" onclick="showPage('ok-kalkulator')">🧭 Kalkulator ICD-10</button>
+      <button class="sidebar-subnav-item" onclick="showPage('ok-badania')">Badania i świadczenia</button>
+      <button class="sidebar-subnav-item" onclick="showPage('ok-limity')">Limity i zasady</button>
+      <button class="sidebar-subnav-item" onclick="showPage('ok-koordynator')">Wynagradzanie koordynatora</button>
+      <button class="sidebar-subnav-item" onclick="showPage('ok-faq')">⚠️ Pułapki i FAQ</button>
+      <button class="sidebar-subnav-item" onclick="showPage('ok-weryfikator')">🛠 Weryfikator</button>
+    </div>
+  </div>
+
+  <div class="sidebar-program" id="prog-mz">
+    <button class="sidebar-program-btn" onclick="toggleProgram('mz')">
+      <span class="sidebar-program-icon">💊</span> Moje Zdrowie
+      <span class="sidebar-arrow">▶</span>
+    </button>
+    <div class="sidebar-subnav">
+      <button class="sidebar-subnav-item" onclick="showPage('mz-czym')">Czym jest program?</button>
+      <button class="sidebar-subnav-item" onclick="showPage('mz-produkty')">Produkty rozliczeniowe</button>
+      <button class="sidebar-subnav-item" onclick="showPage('mz-konflikty')">Konflikty z innymi programami</button>
+    </div>
+  </div>
+
+  <div class="sidebar-program" id="prog-bp">
+    <button class="sidebar-program-btn" onclick="toggleProgram('bp')">
+      <span class="sidebar-program-icon">🔬</span> Mały budżet powierzony
+      <span class="sidebar-arrow">▶</span>
+    </button>
+    <div class="sidebar-subnav">
+      <button class="sidebar-subnav-item" onclick="showPage('bp-czym')">Czym jest?</button>
+      <button class="sidebar-subnav-item" onclick="showPage('bp-lista')">Lista badań i wyceny</button>
+      <button class="sidebar-subnav-item" onclick="showPage('bp-vs-ok')">Różnica vs. budżet OK</button>
+    </div>
+  </div>
+
+  <div class="sidebar-program" id="prog-mm">
+    <button class="sidebar-program-btn" onclick="toggleProgram('mm')">
+      <span class="sidebar-program-icon">📊</span> Wielochorobowość
+      <span class="sidebar-arrow">▶</span>
+    </button>
+    <div class="sidebar-subnav">
+      <button class="sidebar-subnav-item" onclick="showPage('mm-czym')">Czym jest dodatek?</button>
+      <button class="sidebar-subnav-item" onclick="showPage('mm-stawki')">Stawki i zasady</button>
+    </div>
+  </div>
+
+  <div class="sidebar-section-label">Dokumenty źródłowe</div>
+  <div style="padding:0 12px 12px;">
+    <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;text-decoration:none;color:rgba(255,255,255,0.55);font-size:12px;transition:all 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='white'" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.55)'">
+      <span>📄</span><div><div style="font-weight:500;">Zarządzenie 22/2025/DSOZ</div><div style="font-size:10px;opacity:.7;">31 marca 2025 · Podstawowe POZ</div></div>
+    </a>
+    <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr342025dsoz,7856.html" target="_blank" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;text-decoration:none;color:rgba(255,255,255,0.55);font-size:12px;transition:all 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='white'" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.55)'">
+      <span>📄</span><div><div style="font-weight:500;">Zarządzenie 34/2025/DSOZ</div><div style="font-size:10px;opacity:.7;">2 maja 2025 · Moje Zdrowie + wyceny</div></div>
+    </a>
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<main class="content">
+
+<!-- ══════════ OK: CZYM JEST ══════════ -->
+<div class="page active" id="page-ok-czym">
+  <div class="page-header">
+    <div class="page-eyebrow">Opieka Koordynowana</div>
+    <h1 class="page-title">Czym jest opieka koordynowana?</h1>
+    <p class="page-desc">Kompleksowy model opieki nad pacjentem przewlekle chorym realizowany przez lekarza POZ we współpracy ze specjalistami.</p>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" class="legal-ref legal-ref-ext">📄 §4 Zarządzenia 22/2025/DSOZ ↗</a>
+    </div>
+  </div>
+
+  <div class="alert alert-blue">
+    <span class="alert-icon">💡</span>
+    <div>Opieka koordynowana to <strong>rozszerzenie umowy POZ</strong> — przychodnia podpisuje aneks z NFZ i otrzymuje dodatkowy budżet na leczenie pacjentów z chorobami przewlekłymi. Program działa od października 2022 r.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🎯 Cel programu</div>
+    <div class="grid-2">
+      <div class="card-sm"><strong>Dla pacjenta</strong><p style="font-size:13.5px;color:var(--text-muted);margin-top:4px;">Kompleksowa opieka bez konieczności szukania specjalistów. Lekarz POZ koordynuje leczenie i kontaktuje się ze specjalistami w imieniu pacjenta.</p></div>
+      <div class="card-sm"><strong>Dla przychodni</strong><p style="font-size:13.5px;color:var(--text-muted);margin-top:4px;">Dodatkowe finansowanie — budżet powierzony OK, wyższe stawki kapitacyjne i kwartalny dodatek motywacyjny (do 9 000 zł/mies.).</p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Kto może realizować OK?</div>
+    <div class="card">
+      <table class="data-table">
+        <thead><tr><th>Warunek</th><th>Szczegóły</th></tr></thead>
+        <tbody>
+          <tr><td>Umowa POZ z NFZ</td><td>W zakresie świadczeń lekarza POZ</td></tr>
+          <tr><td>Aneks na OK</td><td>Rozszerzenie istniejącej umowy POZ — można podpisać w ciągu całego roku</td></tr>
+          <tr><td>Lekarze specjaliści w harmonogramie</td><td>Min. 1 specjalista z każdej grupy dziedzinowej którą chce się realizować</td></tr>
+          <tr><td>Koordynator</td><td>Osoba do zadań koordynatora — niekoniecznie medyk</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert alert-yellow">
+      <span class="alert-icon">⚠️</span>
+      <div><strong>Ważne:</strong> Lekarz POZ będący jednocześnie specjalistą nie może rozliczać konsultacji dla własnych zadeklarowanych pacjentów. <span class="src">§16 ust. 11 Zarządzenia 22/2025/DSOZ</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🏥 5 grup dziedzinowych</div>
+    <div class="grid-3" style="gap:10px;">
+      <div class="card-sm" style="text-align:center;"><span class="gb gb-d">🩸 Diabetologia</span><p style="font-size:12px;color:var(--text-muted);margin-top:6px;">Cukrzyca E10–E14</p></div>
+      <div class="card-sm" style="text-align:center;"><span class="gb gb-k">❤️ Kardiologia</span><p style="font-size:12px;color:var(--text-muted);margin-top:6px;">Nadciśnienie, ch. wieńcowa, arytmia</p></div>
+      <div class="card-sm" style="text-align:center;"><span class="gb gb-e">🦋 Endokrynologia</span><p style="font-size:12px;color:var(--text-muted);margin-top:6px;">Choroby tarczycy E01–E06</p></div>
+      <div class="card-sm" style="text-align:center;"><span class="gb gb-p">🫁 Pulmonologia</span><p style="font-size:12px;color:var(--text-muted);margin-top:6px;">POChP, astma J41–J45</p></div>
+      <div class="card-sm" style="text-align:center;"><span class="gb gb-n">🫘 Nefrologia</span><p style="font-size:12px;color:var(--text-muted);margin-top:6px;">Przewlekła niewydolność nerek N18</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ OK: WYMAGANIA ══════════ -->
+<div class="page" id="page-ok-wymagania">
+  <div class="page-header">
+    <div class="page-eyebrow">Opieka Koordynowana</div>
+    <h1 class="page-title">Wymagania formalne</h1>
+    <p class="page-desc">Co trzeba zrobić żeby przystąpić do programu i zacząć rozliczać świadczenia OK.</p>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" class="legal-ref legal-ref-ext">📄 Zarządzenie 22/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+      <div class="step-content">
+        <div class="step-label">Podpisanie aneksu z OW NFZ</div>
+        <div class="step-detail">Przychodnia składa wniosek do właściwego Oddziału Wojewódzkiego NFZ o rozszerzenie umowy POZ o zakres "świadczenia w budżecie powierzonym opieki koordynowanej". Aneks można podpisać w ciągu całego roku.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+      <div class="step-content">
+        <div class="step-label">Zgłoszenie specjalistów do harmonogramu</div>
+        <div class="step-detail">W Portalu NFZ należy dodać lekarzy specjalistów dla każdej realizowanej grupy dziedzinowej. Specjalista musi mieć odpowiednią specjalizację.</div>
+        <div class="callout yellow" style="margin-top:8px;">Liczba lekarzy specjalistów zgłoszonych do harmonogramu wpływa na wysokość budżetu powierzonego OK. <span class="src">§16 ust. 4 pkt 3</span></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+      <div class="step-content">
+        <div class="step-label">Zatrudnienie / wyznaczenie koordynatora</div>
+        <div class="step-detail">Koordynator nie musi być medykiem — może to być np. rejestratorka z rozszerzonym zakresem obowiązków. Kluczowe jest aktywne realizowanie zadań: umawianie wizyt, kontakt z pacjentem, monitorowanie IPOM.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
+      <div class="step-content">
+        <div class="step-label">Realizacja pierwszych świadczeń w ciągu 3 miesięcy</div>
+        <div class="step-detail">Od 2026 r. NFZ może wstrzymać wszystkie płatności OK jeśli przez 3 kolejne miesiące nie są realizowane żadne świadczenia.</div>
+        <div class="alert alert-red" style="margin-top:10px;font-size:13px;"><span class="alert-icon">❌</span><div>3 miesiące bez świadczeń = wstrzymanie wyższej stawki, ryczałtu i dodatku motywacyjnego. <span class="src">§41 ust. 3</span></div></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">5</div></div>
+      <div class="step-content">
+        <div class="step-label">Sprawozdawczość comiesięczna</div>
+        <div class="step-detail">Świadczenia z budżetu OK sprawozdaje się komunikatem SWIAD do 10. dnia następnego miesiąca.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ OK: FINANSOWANIE ══════════ -->
+<div class="page" id="page-ok-finansowanie">
+  <div class="page-header">
+    <div class="page-eyebrow">Opieka Koordynowana</div>
+    <h1 class="page-title">Finansowanie i stawki</h1>
+    <p class="page-desc">Skąd przychodnia otrzymuje pieniądze za OK i ile wynoszą poszczególne elementy finansowania.</p>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" class="legal-ref legal-ref-ext">📄 §40–41 Zarządzenia 22/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="alert alert-blue"><span class="alert-icon">💡</span><div>Finansowanie OK składa się z <strong>4 niezależnych strumieni</strong> — każdy rozliczany inaczej.</div></div>
+
+  <div class="card" style="border-left:4px solid var(--accent);margin-bottom:12px;">
+    <div style="font-weight:700;font-size:15px;margin-bottom:6px;">1️⃣ Wyższa stawka kapitacyjna za koordynację</div>
+    <div style="font-size:13.5px;color:var(--text-muted);">Przychodnia z OK i ≥5% pacjentów objętych programem otrzymuje wyższy współczynnik stawki kapitacyjnej. Od 2026 r.: <strong>~12 zł/os.</strong> (wzrost o ~50%).</div>
+    <div class="src">§40–41 Zarządzenia 22/2025/DSOZ</div>
+  </div>
+  <div class="card" style="border-left:4px solid #e6c97a;margin-bottom:12px;">
+    <div style="font-weight:700;font-size:15px;margin-bottom:6px;">2️⃣ Ryczałt dla nowych podmiotów</div>
+    <div style="font-size:13.5px;color:var(--text-muted);">Przychodnie nowo przystępujące do OK: ryczałt przez <strong>6 miesięcy</strong> (~7 700 zł/mies.). Od 2026 r. tylko dla nowych uczestników — stały ryczałt dla wszystkich wygasł z końcem 2025 r.</div>
+  </div>
+  <div class="card" style="border-left:4px solid #b8ddc8;margin-bottom:12px;">
+    <div style="font-weight:700;font-size:15px;margin-bottom:6px;">3️⃣ Kwartalny dodatek motywacyjny (od 2026)</div>
+    <div style="font-size:13.5px;color:var(--text-muted);margin-bottom:10px;">W zależności od odsetka pacjentów objętych OK:</div>
+    <table class="data-table">
+      <thead><tr><th>% pacjentów w OK</th><th>Dodatek miesięczny</th><th>Kwartalnie</th></tr></thead>
+      <tbody>
+        <tr><td>5% – 10%</td><td class="price">3 000 zł</td><td>9 000 zł</td></tr>
+        <tr><td>10% – 20%</td><td class="price">5 000 zł</td><td>15 000 zł</td></tr>
+        <tr><td>powyżej 20%</td><td class="price">9 000 zł</td><td>27 000 zł</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card" style="border-left:4px solid var(--info);">
+    <div style="font-weight:700;font-size:15px;margin-bottom:6px;">4️⃣ Budżet powierzony OK — za wykonane świadczenia</div>
+    <div style="font-size:13.5px;color:var(--text-muted);">Odrębna pula środków na badania diagnostyczne, konsultacje specjalistyczne, porady edukacyjne i poradę kompleksową. Rozliczane "za wykonaną usługę" do wysokości przyznanego budżetu. <span class="src">§15 ust. 2</span></div>
+  </div>
+</div>
+
+<!-- ══════════ OK: ŚCIEŻKA ══════════ -->
+<div class="page" id="page-ok-sciezka">
+  <div class="page-header">
+    <div class="page-eyebrow">Opieka Koordynowana</div>
+    <h1 class="page-title">Ścieżka pacjenta krok po kroku</h1>
+    <p class="page-desc">Jak wygląda kompletna ścieżka od pierwszej wizyty do objęcia pacjenta opieką koordynowaną.</p>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" class="legal-ref legal-ref-ext">📄 §16 Zarządzenia 22/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+      <div class="step-content">
+        <div class="step-label">Porada wstępna <span class="step-badge badge-cap">ze stawki kapitacyjnej</span></div>
+        <div class="step-detail">Lekarz POZ przeprowadza poradę wstępną w celu potwierdzenia lub wykluczenia choroby przewlekłej. W jej trakcie może zlecić badania diagnostyczne z budżetu OK.</div>
+        <div class="callout" style="margin-top:8px;">Porada wstępna jest finansowana ze <strong>stawki kapitacyjnej</strong> — nie z budżetu OK. Nie ma osobnej wyceny z budżetu OK za poradę wstępną. <span class="src">§16 ust. 12</span></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+      <div class="step-content">
+        <div class="step-label">Badania diagnostyczne <span class="step-badge badge-ok">z budżetu OK</span></div>
+        <div class="step-detail">Badania zlecone w trakcie porady wstępnej (np. antyTPO dla podejrzenia niedoczynności tarczycy) można rozliczyć z budżetu OK — niezależnie od tego czy choroba się potwierdzi. <span class="src">§16 ust. 12</span></div>
+        <div class="callout yellow" style="margin-top:8px;">Jeśli choroba się <strong>nie</strong> potwierdzi — badania są rozliczone, ale <strong>nie można rozliczyć porady kompleksowej</strong>. <span class="src">§16 ust. 13</span></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+      <div class="step-content">
+        <div class="step-label">Porada kompleksowa + IPOM <span class="step-badge badge-ok">z budżetu OK</span></div>
+        <div class="step-detail">Po potwierdzeniu choroby przewlekłej lekarz przeprowadza poradę kompleksową i tworzy Indywidualny Plan Opieki Medycznej (IPOM). To jest moment formalnego objęcia pacjenta OK.</div>
+        <div class="alert alert-red" style="margin-top:10px;font-size:13px;"><span class="alert-icon">❌</span><div>Bez potwierdzonej choroby — <strong>porada kompleksowa nie może być rozliczona</strong>. <span class="src">§16 ust. 13</span></div></div>
+        <div style="margin-top:8px;"><span class="limit-pill limit-hard">Max 1 porada kompleksowa / rok</span></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
+      <div class="step-content">
+        <div class="step-label">Konsultacje specjalistyczne <span class="step-badge badge-ok">z budżetu OK</span></div>
+        <div class="step-detail">Lekarz POZ może skierować pacjenta do specjalisty (93,91 zł) lub pacjent samodzielnie trafia do specjalisty (152,17 zł). Konsultacja może odbyć się telefonicznie. <span class="src">§16 ust. 7</span></div>
+        <div style="margin-top:8px;"><span class="limit-pill limit-soft">Max 3% budżetu OK / rok</span></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">5</div><div class="step-line"></div></div>
+      <div class="step-content">
+        <div class="step-label">Porady edukacyjne i konsultacje dietetyczne <span class="step-badge badge-ok">z budżetu OK</span></div>
+        <div class="step-detail">Pacjent może skorzystać z porad edukacyjnych i konsultacji dietetycznych — <strong>łącznie</strong> do 9 razy w roku. <span class="src">§16 ust. 8 pkt 1</span></div>
+        <div style="margin-top:8px;"><span class="limit-pill limit-soft">Max 9 łącznie / rok</span></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num muted">↺</div></div>
+      <div class="step-content">
+        <div class="step-label">Monitorowanie i kolejna porada kompleksowa</div>
+        <div class="step-detail">Lekarz POZ ma obowiązek przeprowadzenia co najmniej 1 porady kompleksowej rocznie. Koordynator monitoruje realizację IPOM. <span class="src">§16 ust. 6</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ OK: KALKULATOR ICD ══════════ -->
+<div class="page" id="page-ok-kalkulator">
+  <div class="page-header">
+    <div class="page-eyebrow">Opieka Koordynowana</div>
+    <h1 class="page-title">Kalkulator ICD-10</h1>
+    <p class="page-desc">Wybierz rozpoznania pacjenta — zobaczysz grupy dziedzinowe i dostępne świadczenia z budżetu OK.</p>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" class="legal-ref legal-ref-ext">📄 Załącznik nr 20 do Zarządzenia 22/2025/DSOZ ↗</a>
+    </div>
+  </div>
+
+  <div class="grid-2" style="align-items:start;">
+    <div>
+      <div class="card">
+        <div style="font-weight:600;font-size:14px;margin-bottom:10px;">🔍 Wyszukaj rozpoznanie ICD-10</div>
+        <div class="icd-search-wrap">
+          <span class="icd-search-icon">🔍</span>
+          <input type="text" id="icd-search" placeholder="Kod lub nazwa choroby..." oninput="filterIcd()">
+        </div>
+        <div class="icd-list-box" id="icd-list"></div>
+        <div style="margin-top:12px;">
+          <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Wybrane rozpoznania</div>
+          <div class="selected-tags" id="sel-tags"><span style="font-size:13px;color:var(--text-muted);font-style:italic;">Brak wybranych</span></div>
+        </div>
+      </div>
+    </div>
+    <div id="kalk-results">
+      <div class="card" style="text-align:center;padding:40px 20px;color:var(--text-muted);">
+        <div style="font-size:36px;margin-bottom:10px;">🎯</div>
+        <p style="font-size:14px;">Wybierz rozpoznania ICD-10, aby zobaczyć grupy dziedzinowe i dostępne świadczenia.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ OK: BADANIA ══════════ -->
+<div class="page" id="page-ok-badania">
+  <div class="page-header">
+    <div class="page-eyebrow">Opieka Koordynowana</div>
+    <h1 class="page-title">Badania i świadczenia z budżetu OK</h1>
+    <p class="page-desc">Pełna lista świadczeń rozliczanych z budżetu powierzonego opieki koordynowanej wraz z wycenami.</p>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" class="legal-ref legal-ref-ext">📄 Załącznik nr 1 poz. 7.x · Zarządzenie 22/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="alert alert-blue"><span class="alert-icon">💡</span><div>Każde badanie jest przypisane do konkretnej grupy dziedzinowej. Nie można rozliczyć badania endokrynologicznego (np. antyTPO) jeśli pacjent jest w OK tylko z powodu kardiologicznego (np. I10).</div></div>
+  <div id="badania-container"></div>
+</div>
+
+<!-- ══════════ OK: LIMITY ══════════ -->
+<div class="page" id="page-ok-limity">
+  <div class="page-header">
+    <div class="page-eyebrow">Opieka Koordynowana</div>
+    <h1 class="page-title">Limity i zasady rozliczeń</h1>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" class="legal-ref legal-ref-ext">📄 §16 Zarządzenia 22/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="stat-card"><div class="stat-value">1×</div><div class="stat-label">Porada kompleksowa</div><div class="stat-sub">na rok / pacjenta</div></div>
+    <div class="stat-card"><div class="stat-value">9×</div><div class="stat-label">Edukacja + dietetyk łącznie</div><div class="stat-sub">na rok / pacjenta</div></div>
+    <div class="stat-card"><div class="stat-value">3%</div><div class="stat-label">Konsultacje specjalistyczne</div><div class="stat-sub">max % budżetu OK / rok</div></div>
+    <div class="stat-card"><div class="stat-value">3 mies.</div><div class="stat-label">Na uruchomienie OK</div><div class="stat-sub">po podpisaniu umowy</div></div>
+  </div>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Zasada</th><th>Szczegóły</th><th>Przepis</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Porada wstępna ≠ budżet OK</strong></td><td>Finansowana ze stawki kapitacyjnej</td><td class="code-mono">§16 ust. 12</td></tr>
+        <tr><td><strong>Badania z porady wstępnej = budżet OK</strong></td><td>Badania zlecone w poradzie wstępnej można rozliczyć z budżetu OK</td><td class="code-mono">§16 ust. 12</td></tr>
+        <tr><td><strong>Brak choroby = brak porady kompleksowej</strong></td><td>Jeśli badania nie potwierdzą choroby — porada kompleksowa nie może być rozliczona</td><td class="code-mono">§16 ust. 13</td></tr>
+        <tr><td><strong>Spec nie rozlicza własnych pacjentów</strong></td><td>Lekarz POZ będący specjalistą nie może rozliczać konsultacji dla swoich deklarantów</td><td class="code-mono">§16 ust. 11</td></tr>
+        <tr><td><strong>Konsultacja telefoniczna jest OK</strong></td><td>Konsultacja POZ ↔ specjalista może odbyć się przez teleporadę</td><td class="code-mono">§16 ust. 7</td></tr>
+        <tr><td><strong>Budżet OK ≠ budżet diagnostyczny</strong></td><td>Ferrytyna, B12 i inne = osobny budżet diagnostyczny, nie budżet OK</td><td class="code-mono">§15 ust. 1–2</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════ OK: KOORDYNATOR ══════════ -->
+<div class="page" id="page-ok-koordynator">
+  <div class="page-header">
+    <div class="page-eyebrow">Opieka Koordynowana</div>
+    <h1 class="page-title">Wynagradzanie koordynatora</h1>
+    <p class="page-desc">Jak NFZ finansuje stanowisko koordynatora — zasady obowiązujące od 2026 r.</p>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" class="legal-ref legal-ref-ext">📄 §40–41 Zarządzenia 22/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="alert alert-yellow"><span class="alert-icon">⚠️</span><div><strong>Zmiana od 2026 r.:</strong> Stały ryczałt dla wszystkich wygasł z końcem 2025 r. Od 2026 r. system jest oparty na aktywności i wynikach.</div></div>
+
+  <div class="section">
+    <div class="section-title">💼 Zadania koordynatora</div>
+    <div class="grid-2">
+      <div class="card-sm"><strong>Zadania profilaktyczne</strong><ul style="font-size:13px;color:var(--text-muted);margin-top:6px;padding-left:16px;"><li>Promocja badań profilaktycznych</li><li>Umawianie badań profilaktycznych (pacjenci 24+)</li></ul></div>
+      <div class="card-sm"><strong>Zadania OK</strong><ul style="font-size:13px;color:var(--text-muted);margin-top:6px;padding-left:16px;"><li>Monitorowanie dokumentacji i IPOM</li><li>Kontakt z pacjentem i rodziną</li><li>Ustalanie terminów etapów opieki</li><li>Komunikacja między personelem</li><li>Informowanie o systemie ochrony zdrowia</li><li>Dobór pacjentów do interwencji zdrowotnych</li></ul></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">💰 Finansowanie od 2026 r.</div>
+    <div class="card">
+      <table class="data-table">
+        <thead><tr><th>Sytuacja</th><th>Stawka koordynatora</th></tr></thead>
+        <tbody>
+          <tr><td>POZ bez OK lub &lt;5% pacjentów</td><td>Standardowa ~7,56 zł/os./rok</td></tr>
+          <tr><td>POZ z OK i ≥5% pacjentów</td><td class="price">~12 zł/os./rok (wzrost ~50%)</td></tr>
+          <tr><td>Nowy podmiot (pierwsze 6 mies.)</td><td class="price">Wyższa stawka + ryczałt ~7 700 zł/mies.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📊 Kwartalny dodatek motywacyjny</div>
+    <div class="card">
+      <table class="data-table">
+        <thead><tr><th>% pacjentów w OK</th><th>Miesięcznie</th><th>Kwartalnie</th></tr></thead>
+        <tbody>
+          <tr><td>5% – 10%</td><td class="price">3 000 zł</td><td>9 000 zł</td></tr>
+          <tr><td>10% – 20%</td><td class="price">5 000 zł</td><td>15 000 zł</td></tr>
+          <tr><td>powyżej 20%</td><td class="price">9 000 zł</td><td>27 000 zł</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">Przychodnia z ponad 20% pacjentów w OK może otrzymać <strong>27 000 zł kwartalnie</strong> tylko z tytułu dodatku — oprócz wyższych stawek i budżetu OK.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-red"><span class="alert-icon">❌</span><div><strong>3 kolejne miesiące bez świadczeń OK</strong> = wstrzymanie wyższej stawki kapitacyjnej, ryczałtu i dodatku motywacyjnego. <span class="src">§41 ust. 3</span></div></div>
+</div>
+
+<!-- ══════════ OK: FAQ ══════════ -->
+<div class="page" id="page-ok-faq">
+  <div class="page-header">
+    <div class="page-eyebrow">Opieka Koordynowana</div>
+    <h1 class="page-title">Pułapki i najczęstsze pytania</h1>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" class="legal-ref legal-ref-ext">📄 Zarządzenie 22/2025/DSOZ ↗</a>
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr342025dsoz,7856.html" target="_blank" class="legal-ref legal-ref-ext">📄 Zarządzenie 34/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="alert alert-yellow"><span class="alert-icon">⚠️</span><div>W przypadkach wątpliwych zawsze warto skonsultować się z Oddziałem Wojewódzkim NFZ.</div></div>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Czy mogę zlecić antyTPO pacjentowi z samym I10 (nadciśnienie)? <span class="faq-arrow">▼</span></div>
+    <div class="faq-a"><strong>Nie.</strong> AntyTPO to badanie endokrynologiczne. Pacjent z samym I10 jest objęty OK w grupie kardiologicznej — badania endokrynologiczne nie są dla niego dostępne z budżetu OK.<br><br>Jeśli lekarz podejrzewa chorobę tarczycy, powinien przeprowadzić <strong>poradę wstępną</strong> pod kątem grupy endokrynologicznej i w jej trakcie zlecić antyTPO. <span class="src">§16 ust. 12</span></div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Pacjent jest już w OK z I10. Chcę zlecić antyTPO pod E03 — czy potrzebna nowa porada wstępna? <span class="faq-arrow">▼</span></div>
+    <div class="faq-a"><strong>Prawdopodobnie tak</strong> — zarządzenie tego wprost nie rozstrzyga. Logika przepisów wskazuje, że każda nowa grupa dziedzinowa wymaga odrębnej ścieżki kwalifikacji. W przypadkach wątpliwych rekomendujemy kontakt z OW NFZ przed rozliczeniem.</div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Czy badania z porady wstępnej można rozliczyć jeśli choroba się NIE potwierdziła? <span class="faq-arrow">▼</span></div>
+    <div class="faq-a"><strong>Tak.</strong> Badania diagnostyczne zlecone w trakcie porady wstępnej można rozliczyć z budżetu OK niezależnie od wyniku.<br><br>Co <em>nie</em> może być rozliczone jeśli choroba się nie potwierdziła: <strong>porada kompleksowa</strong>. <span class="src">§16 ust. 13</span></div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Czy ferrytyna/B12 to świadczenie z budżetu OK? <span class="faq-arrow">▼</span></div>
+    <div class="faq-a"><strong>Nie.</strong> Ferrytyna, B12 i kwas foliowy należą do <strong>budżetu powierzonego diagnostycznego</strong> — to osobna pula środków (poz. 1.17–1.31 w Załączniku nr 1). Budżet OK to poz. 7.x.<br><br>Pacjent w OK nadal może mieć zlecone te badania — rozliczane są z budżetu diagnostycznego, nie z OK. To dwa osobne "worki". <span class="src">§15 ust. 1 vs §15 ust. 2</span></div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Czy można wykonać Moje Zdrowie i poradę kompleksową OK w tym samym dniu? <span class="faq-arrow">▼</span></div>
+    <div class="faq-a"><strong>Nie.</strong> Jest to wprost wykluczone. Nie można rozliczyć bilansu zdrowia (Moje Zdrowie) i porady kompleksowej OK w tym samym dniu u tego samego pacjenta. <span class="src">§18a ust. 3 Zarządzenia 34/2025/DSOZ</span></div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Ile razy w roku pacjent może skorzystać z konsultacji dietetycznej? <span class="faq-arrow">▼</span></div>
+    <div class="faq-a">Limit dotyczy <strong>łącznie</strong> porad edukacyjnych i konsultacji dietetycznych — maksymalnie <strong>9 razy w roku</strong>. Nie ma osobnych limitów dla każdego z tych świadczeń. <span class="src">§16 ust. 8 pkt 1</span></div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Co jeśli przez 3 miesiące nie zrealizujemy żadnych świadczeń OK? <span class="faq-arrow">▼</span></div>
+    <div class="faq-a">Przychodnia traci wszystkie dodatkowe płatności OK:<ul><li>Wyższą stawkę kapitacyjną za koordynację</li><li>Ryczałt na zadania koordynatora</li><li>Kwartalny dodatek motywacyjny</li></ul><span class="src">§41 ust. 3</span></div>
+  </div>
+</div>
+
+<!-- ══════════ OK: WERYFIKATOR ══════════ -->
+<div class="page" id="page-ok-weryfikator">
+  <div class="page-header">
+    <div class="page-eyebrow">Opieka Koordynowana</div>
+    <h1 class="page-title">Weryfikator świadczeń</h1>
+    <p class="page-desc">Sprawdź czy wybrane świadczenia można rozliczyć razem w tym samym dniu.</p>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr342025dsoz,7856.html" target="_blank" class="legal-ref legal-ref-ext">📄 §18a Zarządzenia 34/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="card">
+    <div style="font-weight:600;font-size:14px;margin-bottom:14px;">Zaznacz świadczenia które chcesz rozliczyć pacjentowi:</div>
+    <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Budżet opieki koordynowanej</div>
+    <div class="check-grid" id="ver-ok-list"></div>
+    <hr>
+    <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Inne programy / świadczenia tego samego dnia</div>
+    <div class="check-grid" id="ver-other-list"></div>
+    <div id="ver-result"></div>
+  </div>
+</div>
+
+<!-- ══════════ MZ: CZYM JEST ══════════ -->
+<div class="page" id="page-mz-czym">
+  <div class="page-header">
+    <div class="page-eyebrow">Moje Zdrowie</div>
+    <h1 class="page-title">Czym jest program Moje Zdrowie?</h1>
+    <p class="page-desc">Nowy program profilaktyczny dla dorosłych, zastępujący Profilaktykę 40 Plus. Obowiązuje od 5 maja 2025 r.</p>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr342025dsoz,7856.html" target="_blank" class="legal-ref legal-ref-ext">📄 §18a Zarządzenia 34/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="alert alert-green"><span class="alert-icon">✅</span><div>Program <strong>Moje Zdrowie – Bilans Zdrowia Osoby Dorosłej</strong> zastąpił Profilaktykę 40 Plus. Dostępny od <strong>20. roku życia</strong> — znacznie szersza grupa niż poprzednio (wcześniej od 40 r.ż.).</div></div>
+  <div class="section">
+    <div class="section-title">🎯 Co obejmuje bilans?</div>
+    <div class="steps">
+      <div class="step"><div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div><div class="step-content"><div class="step-label">Kwestionariusz bilansu zdrowia</div><div class="step-detail">Wypełniany przez lekarza, pielęgniarkę lub położną w gabinet.gov. Na podstawie kwestionariusza generowany jest indywidualny zestaw badań.</div></div></div>
+      <div class="step"><div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div><div class="step-content"><div class="step-label">Badania laboratoryjne</div><div class="step-detail">Zawarte w stawce bilansu. Wyniki stanowią podstawę do wizyty podsumowującej.</div></div></div>
+      <div class="step"><div class="step-left"><div class="step-num">3</div></div><div class="step-content"><div class="step-label">Wizyta podsumowująca z Indywidualnym Planem Zdrowotnym</div><div class="step-detail">Lekarz omawia wyniki i tworzy Indywidualny Plan Zdrowotny z interwencjami prozdrowotnymi.</div></div></div>
+    </div>
+  </div>
+  <div class="alert alert-yellow"><span class="alert-icon">⚠️</span><div>Program realizowany jest zgodnie z warunkami określonymi w rozporządzeniu MZ. Szczegółowy zakres badań i formularz kwestionariusza dostępne w systemie gabinet.gov.</div></div>
+</div>
+
+<!-- ══════════ MZ: PRODUKTY ══════════ -->
+<div class="page" id="page-mz-produkty">
+  <div class="page-header">
+    <div class="page-eyebrow">Moje Zdrowie</div>
+    <h1 class="page-title">Produkty rozliczeniowe</h1>
+    <p class="page-desc">Pełna lista świadczeń z aktualnymi wycenami według zarządzenia 34/2025/DSOZ.</p>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr342025dsoz,7856.html" target="_blank" class="legal-ref legal-ref-ext">📄 Załącznik nr 1 poz. 8.x · Zarządzenie 34/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Poz.</th><th>Kod NFZ</th><th>Świadczenie</th><th>Wycena</th></tr></thead>
+      <tbody>
+        <tr><td>8.1</td><td><span class="code-mono">5.01.00.0000283</span></td><td>Bilans zdrowia osoby dorosłej — wiek 20–59 lat</td><td class="price">325,00 zł</td></tr>
+        <tr><td>8.2</td><td><span class="code-mono">5.01.00.0000284</span></td><td>Bilans zdrowia osoby dorosłej — wiek 60 lat i więcej</td><td class="price">349,00 zł</td></tr>
+        <tr><td>8.3</td><td><span class="code-mono">5.01.00.0000285</span></td><td>Porada edukacyjna – Bilans zdrowia</td><td class="price">52,92 zł</td></tr>
+        <tr><td>8.4</td><td><span class="code-mono">5.01.00.0000293</span></td><td>Badanie ogólne moczu – Bilans zdrowia</td><td class="price">15,75 zł</td></tr>
+        <tr><td>8.5</td><td><span class="code-mono">5.01.00.0000286</span></td><td>ASPAT – Bilans zdrowia</td><td class="price">12,00 zł</td></tr>
+        <tr><td>8.6</td><td><span class="code-mono">5.01.00.0000287</span></td><td>ALAT – Bilans zdrowia</td><td class="price">12,00 zł</td></tr>
+        <tr><td>8.7</td><td><span class="code-mono">5.01.00.0000288</span></td><td>GGTP – Bilans zdrowia</td><td class="price">13,00 zł</td></tr>
+        <tr><td>8.8</td><td><span class="code-mono">5.01.00.0000289</span></td><td>PSA – Bilans zdrowia</td><td class="price">32,00 zł</td></tr>
+        <tr><td>8.9</td><td><span class="code-mono">5.01.00.0000290</span></td><td>Przeciwciała anty-HCV – Bilans zdrowia</td><td class="price">44,00 zł</td></tr>
+        <tr><td>8.10</td><td><span class="code-mono">5.01.00.0000291</span></td><td>Lipoproteina a – Bilans zdrowia</td><td class="price">54,00 zł</td></tr>
+        <tr><td>8.11</td><td><span class="code-mono">5.01.00.0000292</span></td><td>Test na krew utajoną w kale metodą immunochemiczną (FIT OC) – Bilans zdrowia</td><td class="price">58,00 zł</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="alert alert-blue"><span class="alert-icon">ℹ️</span><div>Badania ogólne (morfologia, glukoza, lipidogram, kreatynina, TSH) są zawarte w stawce bilansu 8.1/8.2 i nie są sprawozdawane osobno. Powyższe pozycje to świadczenia rozliczane <strong>dodatkowo</strong> obok bilansu.</div></div>
+</div>
+
+<!-- ══════════ MZ: KONFLIKTY ══════════ -->
+<div class="page" id="page-mz-konflikty">
+  <div class="page-header">
+    <div class="page-eyebrow">Moje Zdrowie</div>
+    <h1 class="page-title">Konflikty z innymi programami</h1>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr342025dsoz,7856.html" target="_blank" class="legal-ref legal-ref-ext">📄 §18a ust. 3–4 · Zarządzenie 34/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="alert alert-red"><span class="alert-icon">❌</span><div>Poniższe świadczenia <strong>nie mogą być rozliczone w tym samym dniu</strong> u tego samego pacjenta. Jest to wprost wykluczone przez §18a Zarządzenia 34/2025/DSOZ.</div></div>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Świadczenie A</th><th style="text-align:center;width:40px;"></th><th>Świadczenie B</th><th>Przepis</th></tr></thead>
+      <tbody>
+        <tr><td>Moje Zdrowie – Bilans zdrowia</td><td style="text-align:center;color:var(--accent2);font-size:20px;">✕</td><td>Porada kompleksowa (OK)</td><td class="code-mono">§18a ust. 3</td></tr>
+        <tr><td>Porada edukacyjna (Bilans)</td><td style="text-align:center;color:var(--accent2);font-size:20px;">✕</td><td>Porada edukacyjna (OK)</td><td class="code-mono">§18a ust. 4 pkt 1</td></tr>
+        <tr><td>Porada edukacyjna (Bilans)</td><td style="text-align:center;color:var(--accent2);font-size:20px;">✕</td><td>Konsultacja dietetyczna (OK)</td><td class="code-mono">§18a ust. 4 pkt 2</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout yellow">Te konflikty sprawdzasz szybko w zakładce <strong>🛠 Weryfikator</strong> w sekcji Opieki Koordynowanej.</div>
+</div>
+
+<!-- ══════════ BP: CZYM JEST ══════════ -->
+<div class="page" id="page-bp-czym">
+  <div class="page-header">
+    <div class="page-eyebrow">Mały budżet powierzony diagnostyczny</div>
+    <h1 class="page-title">Czym jest mały budżet powierzony?</h1>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" class="legal-ref legal-ref-ext">📄 §15 ust. 1 · Zarządzenie 22/2025/DSOZ ↗</a>
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr342025dsoz,7856.html" target="_blank" class="legal-ref legal-ref-ext">📄 Załącznik 1 poz. 1.17–1.31 · Zarządzenie 34/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="alert alert-blue"><span class="alert-icon">💡</span><div>Mały budżet powierzony (budżet diagnostyczny) to <strong>odrębna pula środków</strong> na specjalistyczne badania laboratoryjne dostępne dla <strong>wszystkich pacjentów POZ</strong> — niezależnie od tego czy są w OK czy nie.</div></div>
+  <div class="section">
+    <div class="section-title">🔑 Kluczowe zasady</div>
+    <div class="card">
+      <table class="data-table">
+        <thead><tr><th>Zasada</th><th>Szczegóły</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Dostępny dla wszystkich pacjentów POZ</strong></td><td>Nie tylko dla pacjentów w OK</td></tr>
+          <tr><td><strong>Osobna pula od budżetu OK</strong></td><td>Dwa niezależne "worki" finansowe — §15 ust. 1 (diagnostyczny) vs §15 ust. 2 (OK)</td></tr>
+          <tr><td><strong>Zleca lekarz POZ</strong></td><td>W toku normalnego procesu diagnostyczno-leczniczego</td></tr>
+          <tr><td><strong>Załącznik nr 1 poz. 1.17–1.31</strong></td><td>Wyceny w zarządzeniu 34/2025/DSOZ (zaktualizowany załącznik nr 1)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout red"><strong>Częsty błąd:</strong> próba rozliczenia ferrytyny/B12 z budżetu OK (poz. 7.x) zamiast z budżetu diagnostycznego (poz. 1.17–1.18). System NFZ odrzuci błędne sprawozdanie.</div>
+  </div>
+</div>
+
+<!-- ══════════ BP: LISTA ══════════ -->
+<div class="page" id="page-bp-lista">
+  <div class="page-header">
+    <div class="page-eyebrow">Mały budżet powierzony diagnostyczny</div>
+    <h1 class="page-title">Lista badań i wyceny</h1>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr342025dsoz,7856.html" target="_blank" class="legal-ref legal-ref-ext">📄 Załącznik nr 1 poz. 1.17–1.31 · Zarządzenie 34/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="alert alert-yellow"><span class="alert-icon">⚠️</span><div>Wyceny obowiązują od 5 maja 2025 r. (Zarządzenie 34/2025/DSOZ). Anty-HCV zmieniono z 25,30 zł na <strong>44,00 zł</strong>. HIV test przesiewowy to nowe świadczenie dodane zarządzeniem 34/2025.</div></div>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Poz.</th><th>Badanie</th><th>Wycena</th><th>Uwagi</th></tr></thead>
+      <tbody>
+        <tr><td class="code-mono">1.17</td><td>Ferrytyna</td><td class="price">23,00 zł</td><td></td></tr>
+        <tr><td class="code-mono">1.18</td><td>Witamina B12</td><td class="price">24,15 zł</td><td></td></tr>
+        <tr><td class="code-mono">1.19</td><td>Kwas foliowy</td><td class="price">18,40 zł</td><td></td></tr>
+        <tr><td class="code-mono">1.20</td><td>Anty-CCP (p-ciała w kierunku RZS)</td><td class="price">65,56 zł</td><td></td></tr>
+        <tr><td class="code-mono">1.21</td><td>CRP szybki test ilościowy</td><td class="price">16,10 zł</td><td style="font-size:12px;color:var(--text-muted);">Tylko populacja do 6 r.ż.</td></tr>
+        <tr><td class="code-mono">1.22</td><td>Przeciwciała anty-HCV</td><td class="price">44,00 zł</td><td><span class="new-badge">↑ nowa wycena</span></td></tr>
+        <tr><td class="code-mono">1.23</td><td>Antygen H. pylori w kale – test kasetkowy</td><td class="price">26,45 zł</td><td></td></tr>
+        <tr><td class="code-mono">1.24</td><td>Antygen H. pylori w kale – test laboratoryjny</td><td class="price">70,16 zł</td><td></td></tr>
+        <tr><td class="code-mono">1.25</td><td>Strep-test</td><td class="price">13,80 zł</td><td></td></tr>
+        <tr><td class="code-mono">1.26</td><td>Immunoglobuliny E całkowite (IgE)</td><td class="price">27,00 zł</td><td></td></tr>
+        <tr><td class="code-mono">1.27</td><td>IgE swoiste – panel 10 pkt. alergii wziewnych</td><td class="price">112,26 zł</td><td></td></tr>
+        <tr><td class="code-mono">1.28</td><td>IgE swoiste – panel 10 pkt. alergii pokarmowych</td><td class="price">112,26 zł</td><td></td></tr>
+        <tr><td class="code-mono">1.29</td><td>IgE swoiste – panel 20 pkt. alergii wziewnych</td><td class="price">188,83 zł</td><td></td></tr>
+        <tr><td class="code-mono">1.30</td><td>IgE swoiste – panel 20 pkt. alergii pokarmowych</td><td class="price">188,83 zł</td><td></td></tr>
+        <tr><td class="code-mono">1.31</td><td>HIV test przesiewowy (anty-HIV + antygen p24)</td><td class="price">39,80 zł</td><td><span class="new-badge">nowe</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════ BP: VS OK ══════════ -->
+<div class="page" id="page-bp-vs-ok">
+  <div class="page-header">
+    <div class="page-eyebrow">Mały budżet powierzony diagnostyczny</div>
+    <h1 class="page-title">Różnica: budżet diagnostyczny vs. budżet OK</h1>
+  </div>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Cecha</th><th>Budżet diagnostyczny</th><th>Budżet OK</th></tr></thead>
+      <tbody>
+        <tr><td>Podstawa prawna</td><td><span class="code-mono">§15 ust. 1</span></td><td><span class="code-mono">§15 ust. 2</span></td></tr>
+        <tr><td>Kto korzysta</td><td><strong>Wszyscy</strong> pacjenci POZ</td><td>Tylko pacjenci objęci OK</td></tr>
+        <tr><td>Przykłady badań</td><td>Ferrytyna, B12, kwas foliowy, H. pylori, IgE, HIV, anty-HCV</td><td>Holter, ECHO, spirometria, USG Doppler, antyTPO</td></tr>
+        <tr><td>Pozycje w Załączniku nr 1</td><td>1.17 – 1.31</td><td>7.x</td></tr>
+        <tr><td>Powiązanie z grupą dziedzinową</td><td>❌ Brak — badania ogólnodostępne</td><td>✅ Tak — badanie musi odpowiadać grupie</td></tr>
+        <tr><td>Limit roczny</td><td>Brak limitu per pacjenta</td><td>Limit budżetu powierzonego OK</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════ MM: CZYM JEST ══════════ -->
+<div class="page" id="page-mm-czym">
+  <div class="page-header">
+    <div class="page-eyebrow">Wielochorobowość</div>
+    <h1 class="page-title">Czym jest dodatek kwotowy za wielochorobowość?</h1>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" class="legal-ref legal-ref-ext">📄 §24 Zarządzenia 22/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="alert alert-green"><span class="alert-icon">💰</span><div>Dodatek kwotowy za wielochorobowość to <strong>dodatkowe wynagrodzenie</strong> za opiekę nad pacjentami z wieloma chorobami przewlekłymi z różnych grup dziedzinowych. Mało znane — warto sprawdzić czy przychodnia na nie kwalifikuje.</div></div>
+  <div class="section">
+    <div class="section-title">💡 Jak to działa?</div>
+    <div class="card-sm"><p style="font-size:13.5px;">Za każdego pacjenta POZ który ma choroby z <strong>różnych grup dziedzinowych</strong> (Załącznik nr 20) i jest regularnie leczony w POZ — przychodnia otrzymuje <strong>miesięczny</strong> dodatek kwotowy. Im więcej grup — tym wyższy dodatek. Nie wymaga objęcia pacjenta OK.</p></div>
+    <div class="callout">Przykład: pacjent z E11 (cukrzyca) + I10 (nadciśnienie) + E03 (niedoczynność tarczycy) = <strong>3 grupy = 41,32 zł miesięcznie</strong> dodatkowego wynagrodzenia — przez 12 miesięcy.</div>
+  </div>
+  <div class="alert alert-yellow"><span class="alert-icon">⚠️</span><div>Kody R73 i R73.0 (nieprawidłowa krzywa cukrowa, bez rozpoznania cukrzycy) są <strong>wyłączone</strong> z kwalifikacji do dodatku. <span class="src">§24 ust. 1</span></div></div>
+</div>
+
+<!-- ══════════ MM: STAWKI ══════════ -->
+<div class="page" id="page-mm-stawki">
+  <div class="page-header">
+    <div class="page-eyebrow">Wielochorobowość</div>
+    <h1 class="page-title">Stawki i zasady</h1>
+    <div class="legal-refs">
+      <a href="https://www.nfz.gov.pl/zarzadzenia-prezesa/zarzadzenia-prezesa-nfz/zarzadzenie-nr222025dsoz,7849.html" target="_blank" class="legal-ref legal-ref-ext">📄 §24 Zarządzenia 22/2025/DSOZ ↗</a>
+    </div>
+  </div>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Liczba grup dziedzinowych u pacjenta</th><th>Dodatek miesięczny / pacjenta</th></tr></thead>
+      <tbody>
+        <tr><td>1 grupa</td><td class="price">19,07 zł</td></tr>
+        <tr><td>2 grupy</td><td class="price">31,79 zł</td></tr>
+        <tr><td>3 grupy</td><td class="price">41,32 zł</td></tr>
+        <tr><td>4 grupy i więcej</td><td class="price">47,69 zł</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="section">
+    <div class="section-title">📋 Warunki</div>
+    <div class="card">
+      <table class="data-table">
+        <thead><tr><th>Warunek</th><th>Szczegóły</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Kod ICD-10 w dokumentacji</strong></td><td>Kod z Załącznika nr 20 musi być sprawozdany jako główna przyczyna lub choroba współistniejąca</td></tr>
+          <tr><td><strong>Porada kompleksowa z IPOM</strong></td><td>Wypłacany przez 12 mies. od porady kompleksowej z IPOM</td></tr>
+          <tr><td><strong>Lub regularna porada lekarska</strong></td><td>Minimum 1 porada lekarska z powodu danej choroby na każde 6 miesięcy</td></tr>
+          <tr><td><strong>Brak wizyty u specjalisty AOS</strong></td><td>Jeśli pacjent był u specjalisty AOS z powodu danej grupy chorób — dodatek w tej grupie wstrzymany na 12 mies. od tej daty</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// DANE
+// ══════════════════════════════════════════════
+const GROUPS = {
+  diabetologia: {
+    label:'Diabetologia', icon:'🩸', cls:'gb-d',
+    codes:[
+      {code:'E10',name:'Cukrzyca insulinozależna'},
+      {code:'E11',name:'Cukrzyca insulinoniezależna'},
+      {code:'E13',name:'Inne określone postacie cukrzycy'},
+      {code:'E14',name:'Cukrzyca nieokreślona'},
+      {code:'R73',name:'Podwyższone stężenie glukozy'},
+      {code:'R73.0',name:'Nieprawidłowa krzywa cukrowa (test tolerancji glukozy)'},
+    ]
+  },
+  kardiologia: {
+    label:'Kardiologia', icon:'❤️', cls:'gb-k',
+    codes:[
+      {code:'I10',name:'Samoistne (pierwotne) nadciśnienie'},
+      {code:'I11',name:'Choroba nadciśnieniowa z zajęciem serca'},
+      {code:'I11.0',name:'Ch. nadciśnieniowa z zajęciem serca z niew. serca'},
+      {code:'I11.9',name:'Ch. nadciśnieniowa z zajęciem serca bez niew. serca'},
+      {code:'I12',name:'Choroba nadciśnieniowa z zajęciem nerek'},
+      {code:'I12.0',name:'Ch. nadciśnieniowa z zajęciem nerek, z niew. nerek'},
+      {code:'I12.9',name:'Ch. nadciśnieniowa z zajęciem nerek, bez niew. nerek'},
+      {code:'I13',name:'Ch. nadciśnieniowa z zajęciem serca i nerek'},
+      {code:'I13.0',name:'Ch. nadciśnieniowa z z. serca i nerek, z niew. serca'},
+      {code:'I13.1',name:'Ch. nadciśnieniowa z z. serca i nerek, z niew. nerek'},
+      {code:'I13.2',name:'Ch. nadciśnieniowa z z. serca i nerek, z oboma niew.'},
+      {code:'I13.9',name:'Ch. nadciśnieniowa z z. serca i nerek, nieokreślona'},
+      {code:'I15',name:'Nadciśnienie wtórne'},
+      {code:'I20.1',name:'Dusznica bolesna z udokumentowanym skurczem naczyń'},
+      {code:'I20.8',name:'Inne postacie dusznicy bolesnej'},
+      {code:'I20.9',name:'Dusznica bolesna nieokreślona'},
+      {code:'I25',name:'Przewlekła choroba niedokrwienna serca'},
+      {code:'I48',name:'Migotanie i trzepotanie przedsionków'},
+      {code:'I50',name:'Niewydolność serca'},
+      {code:'I50.0',name:'Niewydolność serca zastoinowa'},
+      {code:'I50.1',name:'Niewydolność serca lewokomorowa'},
+      {code:'I50.9',name:'Niewydolność serca nieokreślona'},
+    ]
+  },
+  endokrynologia: {
+    label:'Endokrynologia', icon:'🦋', cls:'gb-e',
+    codes:[
+      {code:'E01',name:'Niedoczynność tarczycy z niedoboru jodu'},
+      {code:'E02',name:'Subkliniczna niedoczynność tarczycy z niedoboru jodu'},
+      {code:'E03',name:'Inne postacie niedoczynności tarczycy'},
+      {code:'E04',name:'Wole nietoksyczne inne'},
+      {code:'E05',name:'Nadczynność tarczycy'},
+      {code:'E06',name:'Zapalenie tarczycy'},
+      {code:'E89.0',name:'Pozabiegowa niedoczynność tarczycy'},
+    ]
+  },
+  pulmonologia: {
+    label:'Pulmonologia', icon:'🫁', cls:'gb-p',
+    codes:[
+      {code:'J41',name:'Przewlekłe zapalenie oskrzeli proste i śluzowo-ropne'},
+      {code:'J42',name:'Nieokreślone przewlekłe zapalenie oskrzeli'},
+      {code:'J43',name:'Rozedma płucna'},
+      {code:'J44',name:'Inna przewlekła zaporowa choroba płuc (POChP)'},
+      {code:'J45',name:'Dychawica oskrzelowa (astma)'},
+    ]
+  },
+  nefrologia: {
+    label:'Nefrologia', icon:'🫘', cls:'gb-n',
+    codes:[
+      {code:'N18',name:'Przewlekła niewydolność nerek'},
+    ]
+  }
+};
+
+const OK_SERVICES = [
+  {name:'BNP (NT-pro-BNP)', price:106.73, groups:['kardiologia']},
+  {name:'Albuminuria (stężenie albumin w moczu)', price:9.03, groups:['nefrologia','diabetologia']},
+  {name:'UACR (albumina/kreatynina w moczu)', price:35.64, groups:['nefrologia','diabetologia']},
+  {name:'AntyTPO (p-ciała przeciw peroksydazie tarczycowej)', price:46.55, groups:['endokrynologia']},
+  {name:'AntyTSHR (p-ciała przeciw receptorom TSH)', price:77.87, groups:['endokrynologia']},
+  {name:'AntyTG (p-ciała przeciw tyreoglobulinie)', price:40.72, groups:['endokrynologia']},
+  {name:'EKG wysiłkowe (próba wysiłkowa)', price:190.19, groups:['kardiologia']},
+  {name:'Holter EKG 24 godz.', price:157.64, groups:['kardiologia']},
+  {name:'Holter EKG 48 godz.', price:176.90, groups:['kardiologia']},
+  {name:'Holter EKG 72 godz.', price:206.60, groups:['kardiologia']},
+  {name:'Holter RR (24h rejestracja ciśnienia)', price:157.64, groups:['kardiologia']},
+  {name:'USG Doppler tętnic szyjnych', price:122.21, groups:['kardiologia']},
+  {name:'USG Doppler żył kończyn dolnych', price:184.03, groups:['kardiologia']},
+  {name:'USG Doppler tętnic kończyn dolnych', price:184.03, groups:['kardiologia']},
+  {name:'ECHO serca przezklatkowe', price:185.65, groups:['kardiologia']},
+  {name:'Spirometria', price:64.69, groups:['pulmonologia']},
+  {name:'Spirometria z próbą rozkurczową', price:114.48, groups:['pulmonologia']},
+  {name:'Biopsja tarczycy (do 2 procedur)', price:458.73, groups:['endokrynologia']},
+  {name:'Biopsja tarczycy (≥3 procedury)', price:920.99, groups:['endokrynologia']},
+  {name:'Konsultacja specjalisty (lekarz POZ → specjalista)', price:93.91, groups:['all'], limit:'max 3% budżetu OK/rok'},
+  {name:'Konsultacja specjalisty (pacjent → specjalista)', price:152.17, groups:['all'], limit:'max 3% budżetu OK/rok'},
+  {name:'Porada edukacyjna', price:52.92, groups:['all'], limit:'max 9 łącznie z dietetykiem/rok'},
+  {name:'Konsultacja dietetyczna', price:63.61, groups:['all'], limit:'max 9 łącznie z edukacją/rok'},
+  {name:'Porada kompleksowa (+ IPOM)', price:216.65, groups:['all'], limit:'max 1 raz na rok', isKomp:true},
+];
+
+// ══════════════════════════════════════════════
+// KALKULATOR ICD
+// ══════════════════════════════════════════════
+const selectedIcds = new Set();
+
+function getAllIcds() {
+  const r = [];
+  for (const [gk, g] of Object.entries(GROUPS))
+    for (const c of g.codes) r.push({...c, gk, gLabel:g.label, gCls:g.cls});
+  return r;
+}
+
+function filterIcd() {
+  const q = document.getElementById('icd-search').value.toLowerCase();
+  renderIcdList(q);
+}
+
+function renderIcdList(q='') {
+  const el = document.getElementById('icd-list');
+  if (!el) return;
+  const all = getAllIcds();
+  const filtered = q ? all.filter(i => i.code.toLowerCase().includes(q) || i.name.toLowerCase().includes(q)) : all;
+  if (!filtered.length) { el.innerHTML = '<div style="padding:14px;text-align:center;color:var(--text-muted);font-size:13px;">Brak wyników</div>'; return; }
+  el.innerHTML = filtered.map(i => `
+    <div class="icd-row ${selectedIcds.has(i.code)?'sel':''}" onclick="toggleIcd('${i.code}')">
+      <span class="icd-row-code">${i.code}</span>
+      <span>${i.name}</span>
+      <span class="icd-row-badge"><span class="gb ${i.gCls}" style="font-size:11px;">${i.gLabel}</span></span>
+    </div>`).join('');
+}
+
+function toggleIcd(code) {
+  selectedIcds.has(code) ? selectedIcds.delete(code) : selectedIcds.add(code);
+  renderIcdList(document.getElementById('icd-search')?.value.toLowerCase() || '');
+  renderSelTags();
+  renderKalkResults();
+}
+
+function removeIcd(code) {
+  selectedIcds.delete(code);
+  renderIcdList(document.getElementById('icd-search')?.value.toLowerCase() || '');
+  renderSelTags();
+  renderKalkResults();
+}
+
+function renderSelTags() {
+  const el = document.getElementById('sel-tags');
+  if (!el) return;
+  if (!selectedIcds.size) { el.innerHTML = '<span style="font-size:13px;color:var(--text-muted);font-style:italic;">Brak wybranych</span>'; return; }
+  const all = getAllIcds();
+  el.innerHTML = [...selectedIcds].map(code => {
+    const item = all.find(i => i.code === code);
+    if (!item) return '';
+    return `<span class="sel-tag ${item.gCls}">${code} <span class="sel-tag-x" onclick="removeIcd('${code}')">×</span></span>`;
+  }).join('');
+}
+
+function getActiveGroups() {
+  const active = new Set();
+  const all = getAllIcds();
+  for (const code of selectedIcds) {
+    const item = all.find(i => i.code === code);
+    if (item) active.add(item.gk);
+  }
+  return active;
+}
+
+function renderKalkResults() {
+  const el = document.getElementById('kalk-results');
+  if (!el) return;
+  const active = getActiveGroups();
+
+  if (!active.size) {
+    el.innerHTML = '<div class="card" style="text-align:center;padding:40px 20px;color:var(--text-muted);"><div style="font-size:36px;margin-bottom:10px;">🎯</div><p style="font-size:14px;">Wybierz rozpoznania ICD-10, aby zobaczyć grupy dziedzinowe i dostępne świadczenia.</p></div>';
+    return;
+  }
+
+  const groupsHtml = [...active].map(gk => {
+    const g = GROUPS[gk];
+    return `<span class="gb ${g.cls}">${g.icon} ${g.label}</span>`;
+  }).join(' ');
+
+  const svcs = OK_SERVICES.filter(s => s.groups.includes('all') || s.groups.some(g => active.has(g)));
+  const rows = svcs.map(s => {
+    const grpBadges = s.groups.includes('all')
+      ? '<span style="font-size:11px;color:var(--text-muted);">Wszystkie grupy</span>'
+      : s.groups.filter(g => active.has(g)).map(g => `<span class="gb ${GROUPS[g].cls}" style="font-size:11px;">${GROUPS[g].label}</span>`).join(' ');
+    const limitHtml = s.limit ? `<span class="limit-pill ${s.isKomp?'limit-hard':'limit-soft'}">${s.limit}</span>` : '—';
+    return `<tr><td>${s.name}</td><td class="price">${s.price.toFixed(2)} zł</td><td>${limitHtml}</td><td>${grpBadges}</td></tr>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="card">
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Wykryte grupy dziedzinowe (${active.size})</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">${groupsHtml}</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Dostępne świadczenia z budżetu OK (${svcs.length})</div>
+      <div style="overflow-x:auto;">
+        <table class="data-table" style="margin:0;">
+          <thead><tr><th>Świadczenie</th><th>Wycena</th><th>Limit</th><th>Grupa</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <div class="alert alert-yellow" style="margin-top:14px;margin-bottom:0;font-size:13px;">
+        <span>⚠️</span><div>Łączna wartość konsultacji specjalistycznych nie może przekroczyć <strong>3% budżetu OK</strong> w roku rozliczeniowym. <span class="src">§16 ust. 9</span></div>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+// BADANIA RENDER
+// ══════════════════════════════════════════════
+function renderBadania() {
+  const el = document.getElementById('badania-container');
+  if (!el || el.innerHTML) return;
+  let html = '';
+  for (const [gk, g] of Object.entries(GROUPS)) {
+    const svcs = OK_SERVICES.filter(s => s.groups.includes(gk) && !s.groups.includes('all'));
+    if (!svcs.length) continue;
+    html += `<div class="section"><div class="section-title"><span class="gb ${g.cls}">${g.icon} ${g.label}</span></div>
+      <div class="card" style="padding:0;overflow:hidden;"><table class="data-table">
+      <thead><tr><th>Świadczenie</th><th>Wycena</th><th>Limit</th></tr></thead><tbody>
+      ${svcs.map(s=>`<tr><td>${s.name}</td><td class="price">${s.price.toFixed(2)} zł</td><td>${s.limit?`<span class="limit-pill limit-soft">${s.limit}</span>`:'—'}</td></tr>`).join('')}
+      </tbody></table></div></div>`;
+  }
+  const universal = OK_SERVICES.filter(s => s.groups.includes('all'));
+  html += `<div class="section"><div class="section-title">🌐 Dla wszystkich grup dziedzinowych</div>
+    <div class="card" style="padding:0;overflow:hidden;"><table class="data-table">
+    <thead><tr><th>Świadczenie</th><th>Wycena</th><th>Limit</th></tr></thead><tbody>
+    ${universal.map(s=>`<tr><td>${s.name}</td><td class="price">${s.price.toFixed(2)} zł</td><td>${s.limit?`<span class="limit-pill ${s.isKomp?'limit-hard':'limit-soft'}">${s.limit}</span>`:'—'}</td></tr>`).join('')}
+    </tbody></table></div></div>`;
+  el.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════
+// WERYFIKATOR
+// ══════════════════════════════════════════════
+const VER_OK_LIST = [
+  {id:'komp',     name:'Porada kompleksowa (OK)'},
+  {id:'edu_ok',   name:'Porada edukacyjna (OK)'},
+  {id:'diet',     name:'Konsultacja dietetyczna (OK)'},
+  {id:'kons_lz',  name:'Konsultacja specjalisty lekarz→spec.'},
+  {id:'kons_pac', name:'Konsultacja specjalisty pacjent→spec.'},
+];
+const VER_OTHER_LIST = [
+  {id:'mz_bilans', name:'Moje Zdrowie – Bilans zdrowia'},
+  {id:'mz_edu',    name:'Porada edukacyjna (Bilans Moje Zdrowie)'},
+  {id:'por_wstepna', name:'Porada wstępna (diagnostyczna)'},
+  {id:'por_kap',   name:'Porada lekarska (kapitacja)'},
+];
+const verState = new Set();
+
+function initVerifier() {
+  const okEl = document.getElementById('ver-ok-list');
+  const othEl = document.getElementById('ver-other-list');
+  if (!okEl || okEl.children.length) return;
+  okEl.innerHTML = VER_OK_LIST.map(s => `<label class="check-item" data-id="${s.id}"><input type="checkbox" onchange="toggleVer('${s.id}',this.checked)"> ${s.name}</label>`).join('');
+  othEl.innerHTML = VER_OTHER_LIST.map(s => `<label class="check-item" data-id="${s.id}"><input type="checkbox" onchange="toggleVer('${s.id}',this.checked)"> ${s.name}</label>`).join('');
+}
+
+function toggleVer(id, checked) {
+  checked ? verState.add(id) : verState.delete(id);
+  document.querySelectorAll('#ver-ok-list .check-item, #ver-other-list .check-item').forEach(el => {
+    el.classList.toggle('checked', el.querySelector('input').checked);
+  });
+  runVer();
+}
+
+function runVer() {
+  const el = document.getElementById('ver-result');
+  if (!el) return;
+  const c = verState;
+  if (!c.size) { el.innerHTML = ''; return; }
+  const errors = [], warns = [];
+
+  if (c.has('komp') && c.has('mz_bilans'))
+    errors.push({msg:'Porada kompleksowa (OK) + Moje Zdrowie – Bilans zdrowia', ref:'§18a ust. 3 Zarządzenia 34/2025/DSOZ'});
+  if (c.has('edu_ok') && c.has('mz_edu'))
+    errors.push({msg:'Porada edukacyjna (OK) + Porada edukacyjna (Bilans)', ref:'§18a ust. 4 pkt 1 Zarządzenia 34/2025/DSOZ'});
+  if (c.has('diet') && c.has('mz_edu'))
+    errors.push({msg:'Konsultacja dietetyczna (OK) + Porada edukacyjna (Bilans)', ref:'§18a ust. 4 pkt 2 Zarządzenia 34/2025/DSOZ'});
+  if (c.has('komp') && c.has('por_wstepna'))
+    warns.push({msg:'Porada kompleksowa wymaga wcześniej potwierdzonej choroby. Porada wstępna służy do kwalifikacji, nie jest warunkiem wystarczającym.', ref:'§16 ust. 13 Zarządzenia 22/2025/DSOZ'});
+  if (c.has('kons_lz') && c.has('kons_pac'))
+    warns.push({msg:'Dwa typy konsultacji specjalistycznych jednocześnie — łączna wartość nie może przekroczyć 3% budżetu OK/rok.', ref:'§16 ust. 9 Zarządzenia 22/2025/DSOZ'});
+
+  if (errors.length) {
+    const errHtml = errors.map(e=>`<li><strong>${e.msg}</strong><br><em style="font-size:11px;">${e.ref}</em></li>`).join('');
+    const warnHtml = warns.length ? '<br>Dodatkowe ostrzeżenia:<ul>'+warns.map(w=>`<li>${w.msg} <em style="font-size:11px;">${w.ref}</em></li>`).join('')+'</ul>' : '';
+    el.innerHTML = `<div class="verdict verdict-red"><span class="verdict-icon">❌</span><div><div class="verdict-title">Wykryto konflikty — nie można rozliczyć razem</div><div class="verdict-body"><ul>${errHtml}</ul>${warnHtml}</div></div></div>`;
+  } else if (warns.length) {
+    el.innerHTML = `<div class="verdict verdict-yellow"><span class="verdict-icon">⚠️</span><div><div class="verdict-title">Brak twardych konfliktów — sprawdź ostrzeżenia</div><div class="verdict-body"><ul>${warns.map(w=>`<li>${w.msg} <em style="font-size:11px;">${w.ref}</em></li>`).join('')}</ul></div></div></div>`;
+  } else {
+    el.innerHTML = `<div class="verdict verdict-green"><span class="verdict-icon">✅</span><div><div class="verdict-title">Brak wykrytych konfliktów</div><div class="verdict-body">Wybrane świadczenia można rozliczyć w tym samym dniu. Pamiętaj o limitach rocznych.</div></div></div>`;
+  }
+}
+
+// ══════════════════════════════════════════════
+// NAWIGACJA
+// ══════════════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById('page-'+id);
+  if (pg) { pg.classList.add('active'); window.scrollTo(0,0); }
+  document.querySelectorAll('.sidebar-subnav-item').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('onclick') === `showPage('${id}')`);
+  });
+  // Lazy init
+  if (id === 'ok-kalkulator') renderIcdList();
+  if (id === 'ok-badania') renderBadania();
+  if (id === 'ok-weryfikator') initVerifier();
+}
+
+function toggleProgram(key) {
+  const prog = document.getElementById('prog-'+key);
+  const isOpen = prog.classList.contains('open');
+  document.querySelectorAll('.sidebar-program').forEach(p => {
+    p.classList.remove('open');
+    p.querySelector('.sidebar-program-btn').classList.remove('active');
+  });
+  if (!isOpen) {
+    prog.classList.add('open');
+    prog.querySelector('.sidebar-program-btn').classList.add('active');
+  }
+}
+
+function toggleFaq(el) { el.classList.toggle('open'); }
+</script>
+</body>
+</html>
